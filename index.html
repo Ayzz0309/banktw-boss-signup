@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BankTW 打王報名系統</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-void: #060503;
+    --bg-panel: #16130c;
+    --bg-panel-2: #201a10;
+    --gold: #cf9f2f;
+    --gold-2: #e9c158;
+    --gold-bright: #f7dd8d;
+    --gold-deep: #6e4f14;
+    --wine: #6f1f2a;
+    --wine-soft: #9c4552;
+    --cream: #f3ecd6;
+    --cream-dim: #ab9c78;
+    --line: rgba(233,193,88,0.22);
+    --danger: #e2574c;
+    --shadow: 0 20px 46px rgba(0,0,0,0.55);
+    --radius: 14px;
+    --font-display: 'Cinzel', 'Noto Sans TC', serif;
+    --font-body: 'Noto Sans TC', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse 900px 460px at 50% -8%, rgba(233,193,88,0.16), transparent 60%),
+      radial-gradient(ellipse 640px 500px at 100% 10%, rgba(111,31,42,0.16), transparent 55%),
+      linear-gradient(180deg, var(--bg-void), #0a0805 55%, #070502);
+    color: var(--cream);
+    font-family: var(--font-body);
+    position: relative;
+    overflow-x: hidden;
+    padding-bottom: 60px;
+  }
+
+  #sparkLayer{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+  .spark{position:absolute;bottom:-30px;color:var(--gold-2);opacity:0.5;will-change:transform,opacity;
+    animation: rise linear infinite; text-shadow:0 0 6px rgba(233,193,88,0.55);}
+  @keyframes rise{
+    0%{transform:translateY(0) translateX(0) scale(0.7); opacity:0;}
+    10%{opacity:0.6;}
+    90%{opacity:0.35;}
+    100%{transform:translateY(-108vh) translateX(var(--drift,30px)) scale(1.1); opacity:0;}
+  }
+  @media (prefers-reduced-motion: reduce){ .spark{animation:none;display:none;} }
+
+  .wrap{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:40px 20px 0;}
+
+  header.hero{text-align:center;margin-bottom:26px;}
+
+  .seal{
+    width:74px;height:74px;margin:0 auto 14px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background: radial-gradient(circle at 35% 30%, #3a2c10, #16110a 70%);
+    border:2px solid var(--gold);
+    box-shadow: 0 0 0 4px rgba(233,193,88,0.10), 0 10px 24px rgba(0,0,0,0.5), inset 0 0 14px rgba(233,193,88,0.15);
+    position:relative;
+    font-size:30px;
+  }
+  .seal::before{
+    content:"";
+    position:absolute; inset:6px;
+    border-radius:50%;
+    border:1px dashed rgba(233,193,88,0.45);
+  }
+
+  .eyebrow{
+    font-family:var(--font-mono);
+    letter-spacing:0.34em;
+    text-transform:uppercase;
+    font-size:11px;
+    color: var(--gold-bright);
+    opacity:0.85;
+    margin-bottom:10px;
+  }
+  h1{
+    font-family:var(--font-display);
+    font-weight:800;
+    font-size:clamp(26px,6.6vw,38px);
+    margin:0 0 10px;
+    letter-spacing:0.5px;
+    background: linear-gradient(120deg, var(--gold-deep) 0%, var(--gold-bright) 30%, var(--gold-2) 50%, var(--gold-bright) 70%, var(--gold-deep) 100%);
+    background-size: 220% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 7s ease-in-out infinite;
+  }
+  @keyframes shimmer{
+    0%,100%{background-position: 0% center;}
+    50%{background-position: 100% center;}
+  }
+  @media (prefers-reduced-motion: reduce){ h1{animation:none;} }
+
+  .subtitle{
+    color: var(--cream-dim);
+    font-size:14.5px;
+    line-height:1.75;
+    max-width:440px;
+    margin:0 auto;
+  }
+
+  .card{
+    background: linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 24px 26px;
+    margin-bottom:22px;
+    position:relative;
+  }
+  .card::before{
+    content:"";
+    position:absolute; top:-1px; left:-1px; width:22px; height:22px;
+    border-top:2px solid var(--gold); border-left:2px solid var(--gold);
+    border-top-left-radius:8px;
+    opacity:0.85; pointer-events:none;
+  }
+  .card::after{
+    content:"";
+    position:absolute; bottom:-1px; right:-1px; width:22px; height:22px;
+    border-bottom:2px solid var(--gold); border-right:2px solid var(--gold);
+    border-bottom-right-radius:8px;
+    opacity:0.85; pointer-events:none;
+  }
+
+  .card-title{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:19px;
+    color: var(--gold-bright);
+    margin: 0 0 6px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .card-hint{
+    font-size:13px;
+    color: var(--cream-dim);
+    margin:0 0 18px;
+    line-height:1.6;
+  }
+
+  label{
+    display:block;
+    font-size:12.5px;
+    font-weight:700;
+    color: var(--gold-bright);
+    margin: 16px 0 6px;
+    letter-spacing:0.03em;
+    font-family: var(--font-display);
+  }
+  label .opt{color:var(--cream-dim); font-weight:400; font-family:var(--font-body);}
+  input[type=text], input[type=number], input[type=password], select, textarea{
+    width:100%;
+    background: rgba(0,0,0,0.32);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 11px 13px;
+    color: var(--cream);
+    font-family: var(--font-body);
+    font-size: 14.5px;
+    outline:none;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  input::placeholder, textarea::placeholder{color: rgba(243,236,214,0.32);}
+  input:focus, select:focus, textarea:focus{
+    border-color: var(--gold);
+    background: rgba(0,0,0,0.44);
+    box-shadow: 0 0 0 3px rgba(233,193,88,0.16);
+  }
+  input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible{
+    outline: 2px solid var(--gold-2);
+    outline-offset: 2px;
+  }
+  textarea{resize:vertical; min-height:76px; font-family:var(--font-body);}
+  select{ appearance:none; -webkit-appearance:none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1L7 7L13 1' stroke='%23e9c158' stroke-width='2' fill='none' stroke-linecap='round'/></svg>");
+    background-repeat:no-repeat; background-position: right 14px center; padding-right:34px;
+  }
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:0 14px;}
+  @media (max-width:480px){ .grid2{grid-template-columns:1fr;} }
+
+  .stat-row{display:flex; align-items:center; gap:10px;}
+  .stat-row input{flex:1;}
+  .unit{font-family:var(--font-mono); color:var(--cream-dim); font-size:13px; white-space:nowrap;}
+
+  button{
+    font-family: var(--font-display);
+    font-weight:700;
+    font-size:15px;
+    border:none;
+    border-radius: 9px;
+    padding: 12px 20px;
+    cursor:pointer;
+    transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+    letter-spacing:0.03em;
+  }
+  button:disabled{opacity:0.6; cursor:not-allowed;}
+  button:active{transform: translateY(1px) scale(0.99);}
+  .btn-primary{
+    background: linear-gradient(135deg, var(--gold-2), var(--gold) 55%, var(--gold-deep));
+    color:#221703;
+    box-shadow: 0 8px 18px rgba(207,159,47,0.32);
+  }
+  .btn-primary:hover{filter:brightness(1.08);}
+  .btn-secondary{
+    background: rgba(243,236,214,0.08);
+    color: var(--cream);
+    border: 1px solid var(--line);
+  }
+  .btn-secondary:hover{background: rgba(243,236,214,0.14);}
+  .btn-ghost{
+    background:transparent;
+    color: var(--cream-dim);
+    border: 1px solid var(--line);
+    font-size:13px;
+    padding:9px 14px;
+  }
+  .btn-ghost:hover{color:var(--cream); border-color: var(--gold-bright);}
+  .btn-block{width:100%;}
+  .btn-row{display:flex; gap:10px; margin-top:18px; flex-wrap:wrap;}
+
+  .tabs{display:flex; gap:8px; margin-bottom:18px;}
+  .tab{
+    flex:1; text-align:center; padding:10px 8px; border-radius:9px;
+    background: rgba(0,0,0,0.26); border:1px solid var(--line);
+    color: var(--cream-dim); font-family:var(--font-display); font-weight:700; font-size:14px;
+    cursor:pointer; transition: all .15s ease;
+  }
+  .tab.active{
+    background: linear-gradient(135deg, rgba(233,193,88,0.24), rgba(111,31,42,0.16));
+    color: var(--gold-bright);
+    border-color: var(--gold);
+  }
+
+  .msg{
+    font-size:13px; padding:10px 12px; border-radius:8px; margin-top:14px;
+    display:none; line-height:1.5;
+  }
+  .msg.show{display:block;}
+  .msg.error{ background: rgba(226,87,76,0.14); color:#ffb3ac; border:1px solid rgba(226,87,76,0.35);}
+  .msg.success{ background: rgba(233,193,88,0.14); color: var(--gold-bright); border:1px solid rgba(233,193,88,0.4);}
+
+  .topbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;}
+  .who{font-family:var(--font-mono); font-size:13px; color: var(--cream-dim);}
+  .who b{color:var(--gold-bright);}
+
+  .section-divider{
+    display:flex; align-items:center; gap:10px; margin: 22px 0 4px;
+    color: var(--wine-soft); font-family:var(--font-display); font-weight:700; font-size:14px;
+  }
+  .section-divider::before{content:"❖"; color:var(--gold); font-size:11px;}
+  .section-divider::after{content:""; flex:1; height:1px; background: var(--line);}
+
+  .upload-box{
+    border: 1.5px dashed var(--line);
+    border-radius: 10px;
+    padding: 16px;
+    text-align:center;
+    cursor:pointer;
+    background: rgba(0,0,0,0.2);
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .upload-box:hover{border-color: var(--gold); background: rgba(0,0,0,0.3);}
+  .upload-box input{display:none;}
+  .upload-hint{font-size:12.5px; color: var(--cream-dim); margin-top:4px;}
+  #screenshotPreview{
+    margin-top:12px; max-width:100%; border-radius:8px; border:1px solid var(--line);
+    display:none;
+  }
+
+  .footer-note{
+    text-align:center; font-size:12px; color: rgba(243,236,214,0.32);
+    margin-top:26px; line-height:1.7;
+  }
+
+  .updated-tag{
+    font-family:var(--font-mono); font-size:11.5px; color: var(--cream-dim);
+    text-align:right; margin-top:4px;
+  }
+
+  .admin-link-row{text-align:center; margin-top:6px;}
+  .admin-link{
+    font-family:var(--font-mono); font-size:12px; color: var(--cream-dim);
+    cursor:pointer; border-bottom:1px dashed var(--line); padding-bottom:1px;
+    user-select:none;
+  }
+  .admin-link:hover{color: var(--gold-bright); border-color: var(--gold);}
+
+  .admin-toolbar{display:flex; gap:10px; margin-bottom:6px; flex-wrap:wrap; align-items:center;}
+  .admin-toolbar input{flex:1; min-width:180px; margin:0;}
+  .admin-count{font-family:var(--font-mono); font-size:12px; color: var(--cream-dim); margin:8px 0 12px;}
+
+  .admin-table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:10px;}
+  table.admin-table{width:100%; border-collapse:collapse; font-size:12.5px; min-width:880px;}
+  table.admin-table th{
+    text-align:left; font-family:var(--font-display); font-weight:700; color: var(--gold-bright);
+    background: rgba(0,0,0,0.4); padding:10px 12px; white-space:nowrap;
+  }
+  table.admin-table td{padding:9px 12px; border-top:1px solid var(--line); color: var(--cream); white-space:nowrap;}
+  table.admin-table tr:hover td{background: rgba(233,193,88,0.05);}
+
+  .thumb-btn{
+    background: rgba(233,193,88,0.12); border:1px solid var(--line); color: var(--gold-bright);
+    font-size:12px; padding:4px 9px; border-radius:6px; cursor:pointer; font-family:var(--font-body);
+  }
+  .thumb-btn:hover{background: rgba(233,193,88,0.22);}
+
+  .empty-state{text-align:center; padding:26px 10px; color: var(--cream-dim); font-size:13.5px;}
+
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(0,0,0,0.72); display:none;
+    align-items:center; justify-content:center; z-index:50; padding:20px;
+  }
+  .modal-backdrop.show{display:flex;}
+  .modal-box{
+    background: var(--bg-panel); border:1px solid var(--line); border-radius:12px;
+    max-width:520px; width:100%; max-height:85vh; overflow:auto; padding:16px; position:relative;
+  }
+  .modal-box img{width:100%; border-radius:8px; border:1px solid var(--line); display:block;}
+  .modal-close{
+    position:absolute; top:10px; right:12px; background:none; border:none;
+    color: var(--cream-dim); font-size:22px; cursor:pointer; line-height:1;
+  }
+  .modal-close:hover{color: var(--gold-bright);}
+
+  .visually-hidden{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+</style>
+</head>
+<body>
+<div id="sparkLayer"></div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="seal">👑</div>
+    <div class="eyebrow">BANKTW GUILD · 公會打王報名系統</div>
+    <h1>BankTW 打王報名系統</h1>
+    <p class="subtitle">公會會員專用登入系統。使用 ID + 密碼登入（ID 可輸入中文），資料隨時可以回來更新，改完按「儲存資料」即可（含截圖）。</p>
+  </header>
+
+  <!-- AUTH CARD -->
+  <div class="card" id="authCard">
+    <div class="tabs">
+      <div class="tab active" id="tabLogin" data-tab="login">👑 會員登入</div>
+      <div class="tab" id="tabRegister" data-tab="register">✦ 新成員註冊</div>
+    </div>
+
+    <div id="loginPane">
+      <label for="loginId">ID <span class="opt">（可中文）</span></label>
+      <input type="text" id="loginId" placeholder="例如：金牌獵人" autocomplete="username">
+      <label for="loginPw">密碼</label>
+      <input type="password" id="loginPw" placeholder="輸入密碼" autocomplete="current-password">
+      <div class="btn-row">
+        <button class="btn-primary btn-block" id="btnLogin">登入</button>
+      </div>
+      <div class="msg" id="loginMsg"></div>
+    </div>
+
+    <div id="registerPane" style="display:none;">
+      <label for="regId">ID <span class="opt">（可中文，將作為登入帳號）</span></label>
+      <input type="text" id="regId" placeholder="例如：金牌獵人" autocomplete="username">
+      <label for="regPw">密碼</label>
+      <input type="password" id="regPw" placeholder="設定密碼" autocomplete="new-password">
+      <label for="regPw2">確認密碼</label>
+      <input type="password" id="regPw2" placeholder="再輸入一次密碼" autocomplete="new-password">
+      <div class="btn-row">
+        <button class="btn-primary btn-block" id="btnRegister">註冊並登入</button>
+      </div>
+      <div class="msg" id="registerMsg"></div>
+    </div>
+  </div>
+
+  <!-- PROFILE CARD (hidden until logged in) -->
+  <div class="card" id="profileCard" style="display:none;">
+    <div class="topbar">
+      <div class="who">目前登入：<b id="whoName">—</b></div>
+      <button class="btn-ghost" id="btnLogout">登出</button>
+    </div>
+    <p class="card-hint">數據有變動（練等、換裝、新一輪王）就回來更新，儲存後立即生效。</p>
+
+    <div class="section-divider">基本資料</div>
+    <div class="grid2">
+      <div>
+        <label for="gameId">遊戲ID</label>
+        <input type="text" id="gameId" placeholder="遊戲內角色名稱">
+      </div>
+      <div>
+        <label for="job">職業</label>
+        <select id="job">
+          <option value="">請選擇職業</option>
+          <option>英雄</option><option>聖騎士</option><option>黑騎士</option>
+          <option>冰雷魔導士</option><option>火毒魔導士</option><option>主教</option>
+          <option>箭神</option><option>神射手</option><option>暗影神偷</option>
+          <option>夜使者</option><option>影武者</option><option>拳霸</option>
+          <option>槍神</option><option>煉獄巫師</option><option>狂豹獵人</option>
+          <option>機甲戰神</option><option>重砲指揮官</option><option>精靈遊俠</option>
+          <option>狂狼勇士</option><option>惡魔殺手</option><option>龍魔導士</option>
+          <option>劍豪</option><option>陰陽師</option><option>幻影俠盜</option>
+        </select>
+      </div>
+    </div>
+
+    <label for="discordName">Discord名稱</label>
+    <input type="text" id="discordName" placeholder="你的 Discord 顯示名稱或帳號">
+
+    <div class="section-divider">戰鬥數值</div>
+    <div class="grid2">
+      <div>
+        <label for="level">等級</label>
+        <input type="number" id="level" placeholder="0" min="0">
+      </div>
+      <div>
+        <label for="mainstat">主屬性</label>
+        <input type="number" id="mainstat" placeholder="0" min="0">
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="snow">自身全開狀態表(不含天氣)</label>
+        <input type="text" id="snow" placeholder="0">
+      </div>
+      <div>
+        <label for="bdmg">B傷</label>
+        <div class="stat-row"><input type="text" id="bdmg" placeholder="0"><span class="unit">%</span></div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="ignore">無視</label>
+        <div class="stat-row"><input type="text" id="ignore" placeholder="0"><span class="unit">%</span></div>
+      </div>
+      <div>
+        <label for="totaldmg">總傷</label>
+        <div class="stat-row"><input type="text" id="totaldmg" placeholder="0"><span class="unit">%</span></div>
+      </div>
+    </div>
+
+    <div class="section-divider">王紀錄</div>
+    <div class="grid2">
+      <div>
+        <label for="prevScore">上輪武陵（炎魔）分數</label>
+        <input type="number" id="prevScore" placeholder="0" min="0">
+      </div>
+      <div>
+        <label for="currScore">本輪武陵（龍王）分數</label>
+        <input type="number" id="currScore" placeholder="0" min="0">
+      </div>
+    </div>
+
+    <label for="activeTime">活躍時間</label>
+    <input type="text" id="activeTime" placeholder="例如：平日晚上 21:00 後、假日全天">
+
+    <div class="section-divider">截圖與備註</div>
+    <label>狀態欄＋本輪武陵分數合併截圖 <span class="opt">（已有截圖時，選新檔案儲存後會直接換成新圖）</span></label>
+    <div class="upload-box" id="uploadBox">
+      <input type="file" id="screenshotInput" accept="image/*">
+      <div id="uploadLabel">📎 點此選擇檔案，或拖曳圖片到這裡</div>
+      <div class="upload-hint">建議 JPG / PNG，上傳後會自動壓縮</div>
+    </div>
+    <img id="screenshotPreview" alt="截圖預覽">
+
+    <label for="note">補充說明 <span class="opt">（選填）</span></label>
+    <p class="card-hint" style="margin-top:-2px; margin-bottom:8px;">（例如希望各王團人數，希望森蘭丸能18人內、女皇能6人內）</p>
+    <textarea id="note" placeholder="其他想讓公會幹部知道的事"></textarea>
+
+    <label for="contact">緊急聯絡方式</label>
+    <input type="text" id="contact" placeholder="LINE ID / Discord 帳號等">
+
+    <div class="section-divider">排團需求</div>
+    <label for="arrangeTeam">需要協助安排的團 <span class="opt">（如：女皇、森蘭丸）</span></label>
+    <input type="text" id="arrangeTeam" placeholder="請輸入想打的王，多個用頓號或逗號分隔">
+    <p class="card-hint" style="margin-top:6px;">（同意如公會文章，被安排者將被抽％進入公會資金及排團資金）</p>
+
+    <div class="btn-row">
+      <button class="btn-primary btn-block" id="btnSave">💾 儲存資料</button>
+    </div>
+    <div class="msg" id="saveMsg"></div>
+    <div class="updated-tag" id="updatedTag"></div>
+  </div>
+
+  <div class="admin-link-row"><span class="admin-link" id="adminToggleLink">🔑 管理員登入（總覽所有成員資料）</span></div>
+
+  <!-- ADMIN AUTH GATE -->
+  <div class="card" id="adminAuthCard" style="display:none;">
+    <div class="card-title">🛡️ 管理員登入</div>
+    <p class="card-hint">輸入管理員密碼即可檢視公會所有成員回報的打王資料。</p>
+    <label for="adminPw">管理員密碼</label>
+    <input type="password" id="adminPw" placeholder="輸入管理員密碼" autocomplete="off">
+    <div class="btn-row">
+      <button class="btn-primary btn-block" id="btnAdminLogin">進入總覽</button>
+      <button class="btn-ghost" id="btnAdminCancel">取消</button>
+    </div>
+    <div class="msg" id="adminAuthMsg"></div>
+  </div>
+
+  <!-- ADMIN DASHBOARD -->
+  <div class="card" id="adminDashboard" style="display:none;">
+    <div class="topbar">
+      <div class="card-title" style="margin:0;">🛡️ 公會成員總覽</div>
+      <button class="btn-ghost" id="btnAdminExit">離開總覽</button>
+    </div>
+    <p class="card-hint">依「本輪武陵分數」由高到低排序，方便安排打王隊伍。</p>
+    <div class="admin-toolbar">
+      <input type="text" id="adminSearch" placeholder="搜尋遊戲ID / 帳號ID / 職業">
+      <button class="btn-secondary" id="btnAdminRefresh">🔄 重新整理</button>
+    </div>
+    <div class="admin-count" id="adminCount"></div>
+    <div class="admin-table-wrap">
+      <table class="admin-table" id="adminTable">
+        <thead>
+          <tr>
+            <th>帳號ID</th><th>遊戲ID</th><th>職業</th><th>等級</th>
+            <th>B傷%</th><th>無視%</th><th>總傷%</th>
+            <th>上輪武陵</th><th>本輪武陵</th><th>活躍時間</th><th>需求排團</th><th>Discord</th><th>聯絡方式</th><th>截圖</th><th>更新時間</th>
+          </tr>
+        </thead>
+        <tbody id="adminTableBody"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="adminEmpty" style="display:none;">目前還沒有任何成員資料。</div>
+  </div>
+
+  <p class="footer-note">👑 BankTW 公會打王報名系統，資料安全儲存在雲端資料庫中。</p>
+</div>
+
+<div class="modal-backdrop" id="screenshotModal">
+  <div class="modal-box">
+    <button class="modal-close" id="modalCloseBtn">×</button>
+    <img id="modalImg" alt="成員截圖">
+  </div>
+</div>
+
+<script>
+(function(){
+  const sparkLayer = document.getElementById('sparkLayer');
+  const sparkGlyphs = ['✦','✧','⋆','✶'];
+  const sparkCount = window.innerWidth < 600 ? 12 : 20;
+  for(let i=0;i<sparkCount;i++){
+    const el = document.createElement('div');
+    el.className='spark';
+    el.textContent = sparkGlyphs[i % sparkGlyphs.length];
+    el.style.left = (Math.random()*100)+'vw';
+    el.style.fontSize = (10+Math.random()*12)+'px';
+    el.style.setProperty('--drift', (Math.random()*100-50)+'px');
+    el.style.animationDuration = (9+Math.random()*10)+'s';
+    el.style.animationDelay = (Math.random()*-18)+'s';
+    sparkLayer.appendChild(el);
+  }
+
+  const $ = (id)=>document.getElementById(id);
+  let currentUser = null;
+  let authToken = null;
+  let screenshotDataUrl = null;
+
+  function showMsg(el, text, type){
+    el.textContent = text;
+    el.className = 'msg show ' + type;
+  }
+  function clearMsg(el){ el.className='msg'; el.textContent=''; }
+
+  async function api(path, options){
+    options = options || {};
+    const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
+    const res = await fetch(path, Object.assign({}, options, { headers }));
+    let data;
+    try{ data = await res.json(); }catch(e){ data = null; }
+    if(!res.ok){
+      const err = new Error((data && data.error) || ('請求失敗（' + res.status + '）'));
+      err.status = res.status;
+      throw err;
+    }
+    return data;
+  }
+  function authHeaders(){
+    return authToken ? { 'Authorization': 'Bearer ' + authToken } : {};
+  }
+
+  // ---------- tabs ----------
+  $('tabLogin').addEventListener('click', ()=>switchTab('login'));
+  $('tabRegister').addEventListener('click', ()=>switchTab('register'));
+  function switchTab(which){
+    $('tabLogin').classList.toggle('active', which==='login');
+    $('tabRegister').classList.toggle('active', which==='register');
+    $('loginPane').style.display = which==='login' ? 'block':'none';
+    $('registerPane').style.display = which==='register' ? 'block':'none';
+    clearMsg($('loginMsg')); clearMsg($('registerMsg'));
+  }
+
+  // ---------- register ----------
+  $('btnRegister').addEventListener('click', async ()=>{
+    const id = $('regId').value.trim();
+    const pw = $('regPw').value;
+    const pw2 = $('regPw2').value;
+    const msg = $('registerMsg');
+    if(!id || !pw){ showMsg(msg,'請輸入 ID 與密碼','error'); return; }
+    if(pw.length < 4){ showMsg(msg,'密碼至少需要 4 個字元','error'); return; }
+    if(pw !== pw2){ showMsg(msg,'兩次輸入的密碼不一致','error'); return; }
+
+    $('btnRegister').disabled = true;
+    try{
+      const data = await api('/api/register', { method:'POST', body: JSON.stringify({ id, password: pw }) });
+      showMsg(msg,'註冊成功，正在登入…','success');
+      await enterAsUser(data.id, data.token, true);
+    }catch(e){
+      showMsg(msg, e.message || '註冊失敗，請稍後再試', 'error');
+    }finally{
+      $('btnRegister').disabled = false;
+    }
+  });
+
+  // ---------- login ----------
+  $('btnLogin').addEventListener('click', async ()=>{
+    const id = $('loginId').value.trim();
+    const pw = $('loginPw').value;
+    const msg = $('loginMsg');
+    if(!id || !pw){ showMsg(msg,'請輸入 ID 與密碼','error'); return; }
+
+    $('btnLogin').disabled = true;
+    try{
+      const data = await api('/api/login', { method:'POST', body: JSON.stringify({ id, password: pw }) });
+      clearMsg(msg);
+      await enterAsUser(data.id, data.token, true);
+    }catch(e){
+      showMsg(msg, e.message || '登入失敗，請稍後再試', 'error');
+    }finally{
+      $('btnLogin').disabled = false;
+    }
+  });
+
+  async function enterAsUser(id, token, persist){
+    currentUser = id;
+    authToken = token;
+    if(persist){
+      try{
+        window.localStorage.setItem('banktw_token', token);
+        window.localStorage.setItem('banktw_id', id);
+      }catch(e){}
+    }
+    $('whoName').textContent = id;
+    $('authCard').style.display = 'none';
+    $('profileCard').style.display = 'block';
+    await loadProfile();
+  }
+
+  $('btnLogout').addEventListener('click', ()=>{
+    currentUser = null;
+    authToken = null;
+    try{
+      window.localStorage.removeItem('banktw_token');
+      window.localStorage.removeItem('banktw_id');
+    }catch(e){}
+    $('profileCard').style.display = 'none';
+    $('authCard').style.display = 'block';
+    $('loginId').value=''; $('loginPw').value='';
+    $('regId').value=''; $('regPw').value=''; $('regPw2').value='';
+    resetProfileForm();
+    switchTab('login');
+  });
+
+  function resetProfileForm(){
+    ['gameId','job','level','snow','bdmg','ignore','totaldmg','mainstat','prevScore','currScore','activeTime','note','contact','arrangeTeam','discordName']
+      .forEach(f=>{ $(f).value=''; });
+    $('screenshotPreview').style.display='none';
+    $('screenshotPreview').src='';
+    $('uploadLabel').textContent = '📎 點此選擇檔案，或拖曳圖片到這裡';
+    $('updatedTag').textContent='';
+    screenshotDataUrl = null;
+  }
+
+  async function loadProfile(){
+    resetProfileForm();
+    let data;
+    try{
+      const res = await api('/api/profile', { method:'GET', headers: authHeaders() });
+      data = res.data;
+    }catch(e){
+      if(e.status === 401){ forceReLogin(); }
+      return;
+    }
+    if(!data) return;
+    $('gameId').value = data.gameId || '';
+    $('job').value = data.job || '';
+    $('level').value = data.level ?? '';
+    $('snow').value = data.snow ?? '';
+    $('bdmg').value = data.bdmg ?? '';
+    $('ignore').value = data.ignore ?? '';
+    $('totaldmg').value = data.totaldmg ?? '';
+    $('mainstat').value = data.mainstat ?? '';
+    $('prevScore').value = data.prevScore ?? '';
+    $('currScore').value = data.currScore ?? '';
+    $('activeTime').value = data.activeTime || '';
+    $('note').value = data.note || '';
+    $('contact').value = data.contact || '';
+    $('arrangeTeam').value = data.arrangeTeam || '';
+    $('discordName').value = data.discordName || '';
+    if(data.screenshot){
+      screenshotDataUrl = data.screenshot;
+      $('screenshotPreview').src = data.screenshot;
+      $('screenshotPreview').style.display = 'block';
+      $('uploadLabel').textContent = '✅ 已有截圖，點此更換';
+    }
+    if(data.updatedAt){
+      const d = new Date(data.updatedAt);
+      $('updatedTag').textContent = '上次更新：' + d.toLocaleString('zh-TW');
+    }
+  }
+
+  function forceReLogin(){
+    currentUser = null; authToken = null;
+    try{
+      window.localStorage.removeItem('banktw_token');
+      window.localStorage.removeItem('banktw_id');
+    }catch(e){}
+    $('profileCard').style.display = 'none';
+    $('authCard').style.display = 'block';
+    showMsg($('loginMsg'), '登入已過期，請重新登入', 'error');
+  }
+
+  $('uploadBox').addEventListener('click', ()=> $('screenshotInput').click());
+  $('uploadBox').addEventListener('dragover', (e)=>{ e.preventDefault(); $('uploadBox').style.borderColor='var(--gold)'; });
+  $('uploadBox').addEventListener('dragleave', ()=>{ $('uploadBox').style.borderColor=''; });
+  $('uploadBox').addEventListener('drop', (e)=>{
+    e.preventDefault();
+    $('uploadBox').style.borderColor='';
+    if(e.dataTransfer.files && e.dataTransfer.files[0]){
+      handleFile(e.dataTransfer.files[0]);
+    }
+  });
+  $('screenshotInput').addEventListener('change', (e)=>{
+    if(e.target.files && e.target.files[0]) handleFile(e.target.files[0]);
+  });
+
+  function handleFile(file){
+    if(!file.type.startsWith('image/')){
+      showMsg($('saveMsg'), '請選擇圖片檔案', 'error');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const maxW = 1280;
+        let width = img.width, height = img.height;
+        if(width > maxW){
+          height = Math.round(height * (maxW / width));
+          width = maxW;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        screenshotDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+        $('screenshotPreview').src = screenshotDataUrl;
+        $('screenshotPreview').style.display='block';
+        $('uploadLabel').textContent = '✅ ' + file.name + '（已自動壓縮，尚未儲存，請按下方儲存資料）';
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  $('btnSave').addEventListener('click', async ()=>{
+    if(!currentUser) return;
+    const msg = $('saveMsg');
+    const payload = {
+      gameId: $('gameId').value.trim(),
+      job: $('job').value,
+      level: $('level').value,
+      snow: $('snow').value,
+      bdmg: $('bdmg').value,
+      ignore: $('ignore').value,
+      totaldmg: $('totaldmg').value,
+      mainstat: $('mainstat').value,
+      prevScore: $('prevScore').value,
+      currScore: $('currScore').value,
+      activeTime: $('activeTime').value,
+      note: $('note').value,
+      contact: $('contact').value,
+      arrangeTeam: $('arrangeTeam').value,
+      discordName: $('discordName').value,
+      screenshot: screenshotDataUrl
+    };
+    $('btnSave').disabled = true;
+    try{
+      const res = await api('/api/save', { method:'POST', headers: authHeaders(), body: JSON.stringify(payload) });
+      showMsg(msg, '✅ 資料已儲存', 'success');
+      const d = new Date(res.updatedAt);
+      $('updatedTag').textContent = '上次更新：' + d.toLocaleString('zh-TW');
+    }catch(e){
+      if(e.status === 401){ forceReLogin(); }
+      showMsg(msg, '❌ ' + (e.message || '儲存失敗，請稍後再試'), 'error');
+    }finally{
+      $('btnSave').disabled = false;
+      setTimeout(()=>clearMsg(msg), 4000);
+    }
+  });
+
+  // ---------- admin overview ----------
+  let allMembersCache = [];
+  let isDemoMode = false;
+
+  const SAMPLE_MEMBERS = [
+    { id:'金色獵鷹', gameId:'金色獵鷹', job:'狂豹獵人', level:295, bdmg:'305', ignore:'93.5', totaldmg:'520', prevScore:18200, currScore:21400, activeTime:'平日 21:00後、假日全天', arrangeTeam:'女皇', contact:'LINE: goldfalcon', updatedAt: Date.now() - 2*3600*1000 },
+    { id:'皇冠見習生', gameId:'皇冠見習生', job:'主教', level:288, bdmg:'260', ignore:'90', totaldmg:'410', prevScore:15300, currScore:17650, activeTime:'週三、週五晚上', arrangeTeam:'森蘭丸', contact:'Discord: crown#0192', updatedAt: Date.now() - 26*3600*1000 },
+    { id:'夜行者阿凱', gameId:'夜行者阿凱', job:'夜使者', level:301, bdmg:'320', ignore:'95', totaldmg:'560', prevScore:19800, currScore:22750, activeTime:'幾乎每天晚上都在', arrangeTeam:'女皇、森蘭丸', contact:'LINE: kai_night', updatedAt: Date.now() - 5*3600*1000 },
+    { id:'龍魔小組長', gameId:'龍魔小組長', job:'龍魔導士', level:279, bdmg:'240', ignore:'88', totaldmg:'380', prevScore:12100, currScore:14900, activeTime:'假日下午', arrangeTeam:'', contact:'Discord: dragonlead', updatedAt: Date.now() - 3*24*3600*1000 }
+  ];
+
+  function hideAllPanels(){
+    $('authCard').style.display='none';
+    $('profileCard').style.display='none';
+    $('adminAuthCard').style.display='none';
+    $('adminDashboard').style.display='none';
+  }
+  function backToMemberView(){
+    hideAllPanels();
+    if(currentUser){ $('profileCard').style.display='block'; }
+    else{ $('authCard').style.display='block'; }
+  }
+
+  $('adminToggleLink').addEventListener('click', ()=>{
+    hideAllPanels();
+    $('adminAuthCard').style.display='block';
+    $('adminPw').value='';
+    clearMsg($('adminAuthMsg'));
+  });
+  $('btnAdminCancel').addEventListener('click', backToMemberView);
+  $('btnAdminExit').addEventListener('click', backToMemberView);
+
+  $('btnAdminLogin').addEventListener('click', async ()=>{
+    const pw = $('adminPw').value;
+    $('btnAdminLogin').disabled = true;
+    try{
+      const res = await api('/api/admin/list', { method:'POST', body: JSON.stringify({ password: pw }) });
+      hideAllPanels();
+      $('adminDashboard').style.display='block';
+      if(!res.members || res.members.length === 0){
+        allMembersCache = SAMPLE_MEMBERS.slice().sort((a,b)=> (Number(b.currScore)||0) - (Number(a.currScore)||0));
+        isDemoMode = true;
+      }else{
+        allMembersCache = res.members;
+        isDemoMode = false;
+      }
+      renderAdminTable();
+    }catch(e){
+      showMsg($('adminAuthMsg'), e.message || '密碼錯誤', 'error');
+    }finally{
+      $('btnAdminLogin').disabled = false;
+    }
+  });
+
+  $('btnAdminRefresh').addEventListener('click', async ()=>{
+    $('adminCount').textContent = '重新整理中…';
+    const pw = $('adminPw').value;
+    try{
+      const res = await api('/api/admin/list', { method:'POST', body: JSON.stringify({ password: pw }) });
+      if(!res.members || res.members.length === 0){
+        allMembersCache = SAMPLE_MEMBERS.slice().sort((a,b)=> (Number(b.currScore)||0) - (Number(a.currScore)||0));
+        isDemoMode = true;
+      }else{
+        allMembersCache = res.members;
+        isDemoMode = false;
+      }
+      renderAdminTable();
+    }catch(e){
+      $('adminCount').textContent = '重新整理失敗，請重新從管理員登入進入';
+    }
+  });
+  $('adminSearch').addEventListener('input', renderAdminTable);
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function renderAdminTable(){
+    const q = ($('adminSearch').value || '').trim().toLowerCase();
+    const filtered = allMembersCache.filter(m=>{
+      if(!q) return true;
+      return (m.id||'').toLowerCase().includes(q)
+        || (m.gameId||'').toLowerCase().includes(q)
+        || (m.job||'').toLowerCase().includes(q);
+    });
+
+    if(isDemoMode){
+      $('adminCount').textContent = '⚠️ 尚無正式成員回報，以下為示範資料（共 ' + allMembersCache.length + ' 筆）'
+        + (q ? '，符合搜尋 ' + filtered.length + ' 位' : '');
+    }else{
+      $('adminCount').textContent = '公會共 ' + allMembersCache.length + ' 位成員已回報'
+        + (q ? '，符合搜尋 ' + filtered.length + ' 位' : '');
+    }
+
+    const tbody = $('adminTableBody');
+    tbody.innerHTML = '';
+    $('adminEmpty').style.display = filtered.length ? 'none' : 'block';
+
+    filtered.forEach(m=>{
+      const tr = document.createElement('tr');
+      const updated = m.updatedAt ? new Date(m.updatedAt).toLocaleString('zh-TW') : '—';
+      tr.innerHTML =
+        '<td>'+escapeHtml(m.id||'')+'</td>'+
+        '<td>'+escapeHtml(m.gameId||'—')+'</td>'+
+        '<td>'+escapeHtml(m.job||'—')+'</td>'+
+        '<td>'+escapeHtml(String(m.level ?? '—'))+'</td>'+
+        '<td>'+escapeHtml(String(m.bdmg ?? '—'))+'</td>'+
+        '<td>'+escapeHtml(String(m.ignore ?? '—'))+'</td>'+
+        '<td>'+escapeHtml(String(m.totaldmg ?? '—'))+'</td>'+
+        '<td>'+escapeHtml(String(m.prevScore ?? '—'))+'</td>'+
+        '<td>'+escapeHtml(String(m.currScore ?? '—'))+'</td>'+
+        '<td>'+escapeHtml(m.activeTime||'—')+'</td>'+
+        '<td>'+escapeHtml(m.arrangeTeam||'—')+'</td>'+
+        '<td>'+escapeHtml(m.discordName||'—')+'</td>'+
+        '<td>'+escapeHtml(m.contact||'—')+'</td>'+
+        '<td>'+(m.screenshot ? '<button class="thumb-btn" data-id="'+encodeURIComponent(m.id)+'">查看</button>' : '—')+'</td>'+
+        '<td>'+updated+'</td>';
+      tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll('.thumb-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = decodeURIComponent(btn.getAttribute('data-id'));
+        const m = allMembersCache.find(x=>x.id===id);
+        if(m && m.screenshot){
+          $('modalImg').src = m.screenshot;
+          $('screenshotModal').classList.add('show');
+        }
+      });
+    });
+  }
+
+  $('modalCloseBtn').addEventListener('click', ()=> $('screenshotModal').classList.remove('show'));
+  $('screenshotModal').addEventListener('click', (e)=>{
+    if(e.target.id === 'screenshotModal') $('screenshotModal').classList.remove('show');
+  });
+
+  // ---------- auto resume session ----------
+  (async function resumeSession(){
+    let token, id;
+    try{
+      token = window.localStorage.getItem('banktw_token');
+      id = window.localStorage.getItem('banktw_id');
+    }catch(e){ return; }
+    if(token && id){
+      await enterAsUser(id, token, false);
+    }
+  })();
+})();
+</script>
+</body>
+</html>
