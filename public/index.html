@@ -284,6 +284,27 @@
     margin-top:26px; line-height:1.7;
   }
 
+  .disclaimer{
+    margin-top:18px;
+    padding:16px 18px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background: rgba(0,0,0,0.18);
+  }
+  .disclaimer-title{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:13px;
+    color: var(--gold-bright);
+    margin:0 0 8px;
+  }
+  .disclaimer ul{
+    margin:0; padding-left:18px;
+    font-size:12px; line-height:1.8;
+    color: rgba(243,236,214,0.5);
+  }
+  .disclaimer li{ margin-bottom:4px; }
+
   .updated-tag{
     font-family:var(--font-mono); font-size:11.5px; color: var(--cream-dim);
     text-align:right; margin-top:4px;
@@ -357,7 +378,7 @@
 
     <div id="loginPane">
       <label for="loginId">ID <span class="opt">（可中文）</span></label>
-      <input type="text" id="loginId" placeholder="例如：你的DC名稱" autocomplete="username">
+      <input type="text" id="loginId" placeholder="例如：金牌獵人" autocomplete="username">
       <label for="loginPw">密碼</label>
       <input type="password" id="loginPw" placeholder="輸入密碼" autocomplete="current-password">
       <div class="btn-row">
@@ -368,7 +389,7 @@
 
     <div id="registerPane" style="display:none;">
       <label for="regId">ID <span class="opt">（可中文，將作為登入帳號）</span></label>
-      <input type="text" id="regId" placeholder="例如：你的DC名稱" autocomplete="username">
+      <input type="text" id="regId" placeholder="例如：金牌獵人" autocomplete="username">
       <label for="regPw">密碼</label>
       <input type="password" id="regPw" placeholder="設定密碼" autocomplete="new-password">
       <label for="regPw2">確認密碼</label>
@@ -410,6 +431,9 @@
       </div>
     </div>
 
+    <label for="discordName">Discord名稱</label>
+    <input type="text" id="discordName" placeholder="你的 Discord 顯示名稱或帳號">
+
     <div class="section-divider">戰鬥數值</div>
     <div class="grid2">
       <div>
@@ -423,11 +447,11 @@
     </div>
     <div class="grid2">
       <div>
-        <label for="snow">自身全開狀態表(包含開雪)</label>
+        <label for="snow">自身全開狀態表(不含天氣)</label>
         <input type="text" id="snow" placeholder="0">
       </div>
       <div>
-        <label for="bdmg">Boss傷害</label>
+        <label for="bdmg">B傷</label>
         <div class="stat-row"><input type="text" id="bdmg" placeholder="0"><span class="unit">%</span></div>
       </div>
     </div>
@@ -437,7 +461,7 @@
         <div class="stat-row"><input type="text" id="ignore" placeholder="0"><span class="unit">%</span></div>
       </div>
       <div>
-        <label for="totaldmg">總傷害</label>
+        <label for="totaldmg">總傷</label>
         <div class="stat-row"><input type="text" id="totaldmg" placeholder="0"><span class="unit">%</span></div>
       </div>
     </div>
@@ -458,7 +482,7 @@
     <input type="text" id="activeTime" placeholder="例如：平日晚上 21:00 後、假日全天">
 
     <div class="section-divider">截圖與備註</div>
-    <label>狀態欄＋武陵分數合併截圖 <span class="opt">（已有截圖時，選新檔案儲存後會直接換成新圖）</span></label>
+    <label>狀態欄＋本輪武陵分數合併截圖 <span class="opt">（已有截圖時，選新檔案儲存後會直接換成新圖）</span></label>
     <div class="upload-box" id="uploadBox">
       <input type="file" id="screenshotInput" accept="image/*">
       <div id="uploadLabel">📎 點此選擇檔案，或拖曳圖片到這裡</div>
@@ -466,11 +490,12 @@
     </div>
     <img id="screenshotPreview" alt="截圖預覽">
 
-    <label for="note">補充說明 <span class="opt">（例如希望各王團人數，希望森蘭丸能18人內、女皇能6人內）</span></label>
+    <label for="note">補充說明 <span class="opt">（選填）</span></label>
+    <p class="card-hint" style="margin-top:-2px; margin-bottom:8px;">（例如希望各王團人數，希望森蘭丸能18人內、女皇能6人內）</p>
     <textarea id="note" placeholder="其他想讓公會幹部知道的事"></textarea>
 
     <label for="contact">緊急聯絡方式</label>
-    <input type="text" id="contact" placeholder="手機號碼 / Discord 帳號等">
+    <input type="text" id="contact" placeholder="LINE ID / Discord 帳號等">
 
     <div class="section-divider">排團需求</div>
     <label for="arrangeTeam">需要協助安排的團 <span class="opt">（如：女皇、森蘭丸）</span></label>
@@ -517,13 +542,24 @@
           <tr>
             <th>帳號ID</th><th>遊戲ID</th><th>職業</th><th>等級</th>
             <th>B傷%</th><th>無視%</th><th>總傷%</th>
-            <th>上輪武陵</th><th>本輪武陵</th><th>活躍時間</th><th>需求排團</th><th>聯絡方式</th><th>截圖</th><th>更新時間</th>
+            <th>上輪武陵</th><th>本輪武陵</th><th>活躍時間</th><th>需求排團</th><th>Discord</th><th>聯絡方式</th><th>截圖</th><th>更新時間</th>
           </tr>
         </thead>
         <tbody id="adminTableBody"></tbody>
       </table>
     </div>
     <div class="empty-state" id="adminEmpty" style="display:none;">目前還沒有任何成員資料。</div>
+  </div>
+
+  <div class="disclaimer">
+    <p class="disclaimer-title">⚠️ 使用須知</p>
+    <ul>
+      <li>本系統為 BankTW 公會自製的內部工具，與遊戲官方無關，並非官方系統。</li>
+      <li>你填寫的角色資料僅提供公會幹部安排打王排團使用，不會提供給第三方。</li>
+      <li>本站密碼採加密儲存，但仍建議不要使用與其他重要帳號（如信箱、遊戲帳號）相同的密碼。</li>
+      <li>排團安排依賴成員自行填寫並更新的資料，若資料未更新或有誤導致分隊問題，公會不負相關責任，請務必隨時保持資料最新。</li>
+      <li>抽成及分配規則以公會公告文章為準，本頁面文字僅為提醒，如有出入以公告內容為主。</li>
+    </ul>
   </div>
 
   <p class="footer-note">👑 BankTW 公會打王報名系統，資料安全儲存在雲端資料庫中。</p>
@@ -664,7 +700,7 @@
   });
 
   function resetProfileForm(){
-    ['gameId','job','level','snow','bdmg','ignore','totaldmg','mainstat','prevScore','currScore','activeTime','note','contact','arrangeTeam']
+    ['gameId','job','level','snow','bdmg','ignore','totaldmg','mainstat','prevScore','currScore','activeTime','note','contact','arrangeTeam','discordName']
       .forEach(f=>{ $(f).value=''; });
     $('screenshotPreview').style.display='none';
     $('screenshotPreview').src='';
@@ -698,6 +734,7 @@
     $('note').value = data.note || '';
     $('contact').value = data.contact || '';
     $('arrangeTeam').value = data.arrangeTeam || '';
+    $('discordName').value = data.discordName || '';
     if(data.screenshot){
       screenshotDataUrl = data.screenshot;
       $('screenshotPreview').src = data.screenshot;
@@ -782,6 +819,7 @@
       note: $('note').value,
       contact: $('contact').value,
       arrangeTeam: $('arrangeTeam').value,
+      discordName: $('discordName').value,
       screenshot: screenshotDataUrl
     };
     $('btnSave').disabled = true;
@@ -912,6 +950,7 @@
         '<td>'+escapeHtml(String(m.currScore ?? '—'))+'</td>'+
         '<td>'+escapeHtml(m.activeTime||'—')+'</td>'+
         '<td>'+escapeHtml(m.arrangeTeam||'—')+'</td>'+
+        '<td>'+escapeHtml(m.discordName||'—')+'</td>'+
         '<td>'+escapeHtml(m.contact||'—')+'</td>'+
         '<td>'+(m.screenshot ? '<button class="thumb-btn" data-id="'+encodeURIComponent(m.id)+'">查看</button>' : '—')+'</td>'+
         '<td>'+updated+'</td>';
