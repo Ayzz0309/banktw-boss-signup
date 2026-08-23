@@ -1,6 +1,6 @@
 const ALLOWED_FIELDS = [
   'gameId', 'job', 'level', 'snow', 'bdmg', 'ignore', 'totaldmg', 'mainstat',
-  'prevScore', 'currScore', 'activeTime', 'note', 'contact', 'arrangeTeam', 'screenshot'
+  'prevScore', 'currScore', 'activeTime', 'note', 'contact', 'arrangeTeam', 'discordName', 'screenshot'
 ];
 const MAX_BODY_BYTES = 4 * 1024 * 1024; // 4MB safety cap (fields + screenshot)
 
