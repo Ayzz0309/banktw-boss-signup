@@ -1,0 +1,11 @@
+name = "banktw-boss-signup"
+compatibility_date = "2026-08-23"
+main = "src/worker.js"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[[kv_namespaces]]
+binding = "BANKTW_KV"
+id = "a6c9b4661b6d452591c4253275cdac7b"
