@@ -378,7 +378,7 @@
 
     <div id="loginPane">
       <label for="loginId">ID <span class="opt">（可中文）</span></label>
-      <input type="text" id="loginId" placeholder="例如：你的遊戲ID" autocomplete="username">
+      <input type="text" id="loginId" placeholder="例如：金牌獵人" autocomplete="username">
       <label for="loginPw">密碼</label>
       <input type="password" id="loginPw" placeholder="輸入密碼" autocomplete="current-password">
       <div class="btn-row">
@@ -389,7 +389,7 @@
 
     <div id="registerPane" style="display:none;">
       <label for="regId">ID <span class="opt">（可中文，將作為登入帳號）</span></label>
-      <input type="text" id="regId" placeholder="例如：你的遊戲ID" autocomplete="username">
+      <input type="text" id="regId" placeholder="例如：金牌獵人" autocomplete="username">
       <label for="regPw">密碼</label>
       <input type="password" id="regPw" placeholder="設定密碼" autocomplete="new-password">
       <label for="regPw2">確認密碼</label>
@@ -447,11 +447,11 @@
     </div>
     <div class="grid2">
       <div>
-        <label for="snow">自身全開狀態表(包含開雪)</label>
+        <label for="snow">自身全開狀態表(不含天氣)</label>
         <input type="text" id="snow" placeholder="0">
       </div>
       <div>
-        <label for="bdmg">Boss傷害</label>
+        <label for="bdmg">B傷</label>
         <div class="stat-row"><input type="text" id="bdmg" placeholder="0"><span class="unit">%</span></div>
       </div>
     </div>
@@ -461,12 +461,12 @@
         <div class="stat-row"><input type="text" id="ignore" placeholder="0"><span class="unit">%</span></div>
       </div>
       <div>
-        <label for="totaldmg">總傷害</label>
+        <label for="totaldmg">總傷</label>
         <div class="stat-row"><input type="text" id="totaldmg" placeholder="0"><span class="unit">%</span></div>
       </div>
     </div>
 
-    <div class="section-divider">武陵紀錄</div>
+    <div class="section-divider">王紀錄</div>
     <div class="grid2">
       <div>
         <label for="prevScore">上輪武陵（炎魔）分數</label>
@@ -495,7 +495,7 @@
     <textarea id="note" placeholder="其他想讓公會幹部知道的事"></textarea>
 
     <label for="contact">緊急聯絡方式</label>
-    <input type="text" id="contact" placeholder="Discord 帳號名稱">
+    <input type="text" id="contact" placeholder="LINE ID / Discord 帳號等">
 
     <div class="section-divider">排團需求</div>
     <label for="arrangeTeam">需要協助安排的團 <span class="opt">（如：女皇、森蘭丸）</span></label>
@@ -542,7 +542,7 @@
           <tr>
             <th>帳號ID</th><th>遊戲ID</th><th>職業</th><th>等級</th>
             <th>B傷%</th><th>無視%</th><th>總傷%</th>
-            <th>上輪武陵</th><th>本輪武陵</th><th>活躍時間</th><th>需求排團</th><th>Discord</th><th>聯絡方式</th><th>截圖</th><th>更新時間</th>
+            <th>上輪武陵</th><th>本輪武陵</th><th>活躍時間</th><th>需求排團</th><th>Discord</th><th>聯絡方式</th><th>補充說明</th><th>截圖</th><th>更新時間</th>
           </tr>
         </thead>
         <tbody id="adminTableBody"></tbody>
@@ -952,6 +952,7 @@
         '<td>'+escapeHtml(m.arrangeTeam||'—')+'</td>'+
         '<td>'+escapeHtml(m.discordName||'—')+'</td>'+
         '<td>'+escapeHtml(m.contact||'—')+'</td>'+
+        '<td style="max-width:180px; white-space:normal; word-break:break-word;" title="'+escapeHtml(m.note||'')+'">'+escapeHtml(m.note||'—')+'</td>'+
         '<td>'+(m.screenshot ? '<button class="thumb-btn" data-id="'+encodeURIComponent(m.id)+'">查看</button>' : '—')+'</td>'+
         '<td>'+updated+'</td>';
       tbody.appendChild(tr);
