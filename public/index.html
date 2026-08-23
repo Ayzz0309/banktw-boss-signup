@@ -357,7 +357,7 @@
 
     <div id="loginPane">
       <label for="loginId">ID <span class="opt">（可中文）</span></label>
-      <input type="text" id="loginId" placeholder="例如：你的遊戲ID" autocomplete="username">
+      <input type="text" id="loginId" placeholder="例如：你的DC名稱" autocomplete="username">
       <label for="loginPw">密碼</label>
       <input type="password" id="loginPw" placeholder="輸入密碼" autocomplete="current-password">
       <div class="btn-row">
@@ -368,7 +368,7 @@
 
     <div id="registerPane" style="display:none;">
       <label for="regId">ID <span class="opt">（可中文，將作為登入帳號）</span></label>
-      <input type="text" id="regId" placeholder="例如：你的遊戲ID" autocomplete="username">
+      <input type="text" id="regId" placeholder="例如：你的DC名稱" autocomplete="username">
       <label for="regPw">密碼</label>
       <input type="password" id="regPw" placeholder="設定密碼" autocomplete="new-password">
       <label for="regPw2">確認密碼</label>
@@ -423,11 +423,11 @@
     </div>
     <div class="grid2">
       <div>
-        <label for="snow">自身全開狀態表(不含天氣)</label>
+        <label for="snow">自身全開狀態表(包含開雪)</label>
         <input type="text" id="snow" placeholder="0">
       </div>
       <div>
-        <label for="bdmg">B傷</label>
+        <label for="bdmg">Boss傷害</label>
         <div class="stat-row"><input type="text" id="bdmg" placeholder="0"><span class="unit">%</span></div>
       </div>
     </div>
@@ -437,7 +437,7 @@
         <div class="stat-row"><input type="text" id="ignore" placeholder="0"><span class="unit">%</span></div>
       </div>
       <div>
-        <label for="totaldmg">總傷</label>
+        <label for="totaldmg">總傷害</label>
         <div class="stat-row"><input type="text" id="totaldmg" placeholder="0"><span class="unit">%</span></div>
       </div>
     </div>
@@ -458,7 +458,7 @@
     <input type="text" id="activeTime" placeholder="例如：平日晚上 21:00 後、假日全天">
 
     <div class="section-divider">截圖與備註</div>
-    <label>狀態欄＋本輪武陵分數合併截圖 <span class="opt">（已有截圖時，選新檔案儲存後會直接換成新圖）</span></label>
+    <label>狀態欄＋武陵分數合併截圖 <span class="opt">（已有截圖時，選新檔案儲存後會直接換成新圖）</span></label>
     <div class="upload-box" id="uploadBox">
       <input type="file" id="screenshotInput" accept="image/*">
       <div id="uploadLabel">📎 點此選擇檔案，或拖曳圖片到這裡</div>
@@ -470,7 +470,7 @@
     <textarea id="note" placeholder="其他想讓公會幹部知道的事"></textarea>
 
     <label for="contact">緊急聯絡方式</label>
-    <input type="text" id="contact" placeholder="LINE ID / Discord 帳號等">
+    <input type="text" id="contact" placeholder="手機號碼 / Discord 帳號等">
 
     <div class="section-divider">排團需求</div>
     <label for="arrangeTeam">需要協助安排的團 <span class="opt">（如：女皇、森蘭丸）</span></label>
